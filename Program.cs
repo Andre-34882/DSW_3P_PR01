@@ -10,15 +10,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-builder.Services.AddScoped<IMisionRepository, MisionSqlRepository>();
+//builder.Services.AddScoped<IMisionRepository, MisionSqlRepository>();
+builder.Services.AddScoped<IMisionRepository, MisionPostgreSqlRepository>();
 builder.Services.AddScoped<IMisionService, MisionService>();
 //Configuracion del SQL SERVER
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("SqlServerConnection")
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//  options.UseSqlServer(
+//    builder.Configuration.GetConnectionString("SqlServerConnection")
+// ) 
+//);
+//Configuracion de PosstgreSQL
+builder.Services.AddDbContext<PostgreSqlDbContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("PostgreSqlConnection")
     ) 
 );
-
 
 var jwt = builder.Configuration.GetSection("Jwt");
 var key = Convert.FromBase64String(
@@ -82,3 +88,5 @@ app.Run();
 //dotnet tool install --global dotnet-ef --version 10.0.*
 
 //dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version "10.0.*"
+
+//dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL --version 10.0.*
